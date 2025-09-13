@@ -62,7 +62,7 @@ int MyModbus::modbus_task(uint8_t *rbuf, int rl, uint8_t *sbuf) {
             uint16_t adr = convert_uint16(rbuf[2], rbuf[3]);
             uint16_t data_len = convert_uint16(rbuf[4], rbuf[5]);
             //レジスタ不正エラー
-            if (adr+data_len > REGS_MAX) {
+            if (adr + data_len > REGS_MAX) {
               make_exception_resp(sbuf, id, rbuf[1], INVAILED_ADR);
               return 5;
             }
@@ -91,7 +91,7 @@ int MyModbus::modbus_task(uint8_t *rbuf, int rl, uint8_t *sbuf) {
             uint16_t adr = convert_uint16(rbuf[2], rbuf[3]);
             uint16_t data_len = convert_uint16(rbuf[4], rbuf[5]);
             //レジスタ不正エラー
-            if (adr+data_len > REGS_MAX) {
+            if (adr + data_len > REGS_MAX) {
               make_exception_resp(sbuf, id, rbuf[1], INVAILED_ADR);
               return 5;
             }
@@ -123,7 +123,7 @@ int MyModbus::modbus_task(uint8_t *rbuf, int rl, uint8_t *sbuf) {
             int coils_value = 0x01 << (adr % 8);
 
             //レジスタ不正エラー
-            if (adr > COILS_MAX*16) {
+            if (adr > COILS_MAX * 16) {
               make_exception_resp(sbuf, id, rbuf[1], INVAILED_ADR);
               return 5;
             }
@@ -185,7 +185,7 @@ int MyModbus::modbus_task(uint8_t *rbuf, int rl, uint8_t *sbuf) {
             uint16_t data_len = convert_uint16(rbuf[4], rbuf[5]);
             uint16_t n_byte = rbuf[6];
             //レジスタ不正エラー
-            if (adr+data_len> REGS_MAX) {
+            if (adr + data_len > REGS_MAX) {
               make_exception_resp(sbuf, id, rbuf[1], INVAILED_ADR);
               return 5;
             }
@@ -206,15 +206,125 @@ int MyModbus::modbus_task(uint8_t *rbuf, int rl, uint8_t *sbuf) {
           }
           break;
 
+        //Cyclic Function 0
+        case 65:
+          {
+            sCycFunc cf = cycfunc0;
+            int rc = 2;
+            for (int i = 0; i < cf.tx_len; i++) {
+              *cf.tx_adr[i] = convert_int16(rbuf[rc++], rbuf[rc++]);
+            }
+
+            rc = 0;
+            sbuf[rc++] = id;
+            sbuf[rc++] = rbuf[1];
+            for (int i = 0; i < cf.rx_len; i++) {
+              sbuf[rc++] = (uint8_t)(*cf.rx_adr[i] >> 8);
+              sbuf[rc++] = *cf.rx_adr[i];
+            }
+            uint16_t crc = calc_crc(sbuf, rc);
+            sbuf[rc++] = crc;
+            sbuf[rc++] = (uint8_t)(crc >> 8);
+            return rc;
+          }
+
+        //Cyclic Function 1
+        case 66:
+          {
+            sCycFunc cf = cycfunc1;
+            int rc = 2;
+            for (int i = 0; i < cf.tx_len; i++) {
+              *cf.tx_adr[i] = convert_int16(rbuf[rc++], rbuf[rc++]);
+            }
+
+            rc = 0;
+            sbuf[rc++] = id;
+            sbuf[rc++] = rbuf[1];
+            for (int i = 0; i < cf.rx_len; i++) {
+              sbuf[rc++] = (uint8_t)(*cf.rx_adr[i] >> 8);
+              sbuf[rc++] = *cf.rx_adr[i];
+            }
+            uint16_t crc = calc_crc(sbuf, rc);
+            sbuf[rc++] = crc;
+            sbuf[rc++] = (uint8_t)(crc >> 8);
+            return rc;
+          }
+
+        //Cyclic Function 2
+        case 67:
+          {
+            sCycFunc cf = cycfunc2;
+            int rc = 2;
+            for (int i = 0; i < cf.tx_len; i++) {
+              *cf.tx_adr[i] = convert_int16(rbuf[rc++], rbuf[rc++]);
+            }
+
+            rc = 0;
+            sbuf[rc++] = id;
+            sbuf[rc++] = rbuf[1];
+            for (int i = 0; i < cf.rx_len; i++) {
+              sbuf[rc++] = (uint8_t)(*cf.rx_adr[i] >> 8);
+              sbuf[rc++] = *cf.rx_adr[i];
+            }
+            uint16_t crc = calc_crc(sbuf, rc);
+            sbuf[rc++] = crc;
+            sbuf[rc++] = (uint8_t)(crc >> 8);
+            return rc;
+          }
+
+        //Cyclic Function 3
+        case 68:
+          {
+            sCycFunc cf = cycfunc3;
+            int rc = 2;
+            for (int i = 0; i < cf.tx_len; i++) {
+              *cf.tx_adr[i] = convert_int16(rbuf[rc++], rbuf[rc++]);
+            }
+
+            rc = 0;
+            sbuf[rc++] = id;
+            sbuf[rc++] = rbuf[1];
+            for (int i = 0; i < cf.rx_len; i++) {
+              sbuf[rc++] = (uint8_t)(*cf.rx_adr[i] >> 8);
+              sbuf[rc++] = *cf.rx_adr[i];
+            }
+            uint16_t crc = calc_crc(sbuf, rc);
+            sbuf[rc++] = crc;
+            sbuf[rc++] = (uint8_t)(crc >> 8);
+            return rc;
+          }
+
+        //Cyclic Function 4
+        case 69:
+          {
+            sCycFunc cf = cycfunc4;
+            int rc = 2;
+            for (int i = 0; i < cf.tx_len; i++) {
+              *cf.tx_adr[i] = convert_int16(rbuf[rc++], rbuf[rc++]);
+            }
+
+            rc = 0;
+            sbuf[rc++] = id;
+            sbuf[rc++] = rbuf[1];
+            for (int i = 0; i < cf.rx_len; i++) {
+              sbuf[rc++] = (uint8_t)(*cf.rx_adr[i] >> 8);
+              sbuf[rc++] = *cf.rx_adr[i];
+            }
+            uint16_t crc = calc_crc(sbuf, rc);
+            sbuf[rc++] = crc;
+            sbuf[rc++] = (uint8_t)(crc >> 8);
+            return rc;
+          }
+
         default:
           make_exception_resp(sbuf, id, rbuf[1], UNKOWN_FUNC);
           return 5;
           break;
       }
-    }else{
+    } else {
       return 0;
     }
-  }else{
+  } else {
     return 0;
   }
 }

@@ -24,6 +24,14 @@
 # define _MYMODBUS_H_
 
 #include "Arduino.h"
+
+// 構造体
+struct sCycFunc {
+    int16_t tx_len = 0;
+    int16_t rx_len = 0;
+    int16_t *tx_adr[8];
+    int16_t *rx_adr[8];
+};
      
 // クラス宣言
 class MyModbus
@@ -34,10 +42,15 @@ class MyModbus
         // void set_input_regs(int adr, uint16_t *val_adr);
         int modbus_task(uint8_t *rbuf, int rl, uint8_t *s_buf);
         int16_t *p_input_regs[32];
-        uint8_t *p_coils[8];
-        int16_t *p_holding_regs[32];
+        uint8_t *p_coils[2];
+        int16_t *p_holding_regs[16];
         const int REGS_MAX = 32;
         const int COILS_MAX = 8;
+        sCycFunc cycfunc0;
+        sCycFunc cycfunc1;
+        sCycFunc cycfunc2;
+        sCycFunc cycfunc3;
+        sCycFunc cycfunc4;
     private:
         uint8_t id;
     };
