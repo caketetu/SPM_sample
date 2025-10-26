@@ -1,5 +1,4 @@
 #include "SPM_Modbus.h"
-#define DEV_ID 0x30
 
 //UART Serial2(A4, A5);
 
@@ -13,11 +12,13 @@ void setup() {
   //Serial2.begin(115200);
   delay(2000);
 
-  SPM_ModbusSetAddress(DEV_ID);
+  SPM_ModbusSetAddress(0xff);
 
   ro_value[0] = 48;    //モデルナンバー
   ro_value[1] = 0002;  //バージョン
   ro_value[2] = 0000;  //サブバージョン
+
+  rw_value[0] = 0xffff;  //デバイスID
 
   //各レジスタ初期化
   //コイル---rwレジスタと同じ
@@ -72,7 +73,7 @@ void setup() {
   cycfunc4.rx_adr[4] = &rw_value[4];
   cycfunc4.rx_adr[5] = &rw_value[5];
   cycfunc4.rx_adr[6] = &rw_value[6];
-  cycfunc4.rx_adr[7] = &ro_value[7];
+  cycfunc4.rx_adr[7] = &rw_value[7];
   cycfunc4.tx_len = 8;
   cycfunc4.tx_adr[0] = &rw_value[0];
   cycfunc4.tx_adr[1] = &rw_value[1];
@@ -84,6 +85,7 @@ void setup() {
   cycfunc4.tx_adr[7] = &rw_value[7];
 
   int t = SPM_ModbusParamLoad();
+  SPM_ModbusSetAddress((uint8_t)rw_value[0]);
   //Serial2.println("Start...");
 }
 
@@ -136,5 +138,4 @@ void loop() {
     Serial2.print("\r\n");
     */
   }
-  ro_value[7]++;
 }
